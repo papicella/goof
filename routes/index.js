@@ -37,7 +37,10 @@ exports.index = function (req, res, next) {
 
 exports.loginHandler = function (req, res, next) {
   if (validator.isEmail(req.body.username)) {
-    User.find({ username: req.body.username, password: req.body.password }, function (err, users) {
+    // Sanitize inputs to prevent NoSQL injection
+    const sanitizedUsername = String(req.body.username);
+    const sanitizedPassword = String(req.body.password);
+    User.find({ username: sanitizedUsername, password: sanitizedPassword }, function (err, users) {
       if (users.length > 0) {
         const redirectPage = req.body.redirectPage
         const session = req.session
